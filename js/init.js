@@ -354,12 +354,12 @@ function arlo_tm_owl_carousel(){
 	var carousel			= jQuery('.arlo_tm_services_wrap .owl-carousel');
   	carousel.owlCarousel({
 			loop: true,
-			items: 3,
+			items: 8,
 			lazyLoad: true,
 			margin: 30,
 			autoplay: false,
-			autoplayTimeout: 6000,
-			smartSpeed: 2000,
+			autoplayTimeout: 3000,
+			smartSpeed: 1000,
 			dots: true,
 			nav: false,
 			navSpeed: true,
