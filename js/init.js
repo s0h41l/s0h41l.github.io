@@ -363,15 +363,15 @@ function arlo_tm_owl_carousel(){
 			dots: true,
 			nav: false,
 			navSpeed: true,
-		// 	responsive:{
-		// 	0:{items:1},
-		// 	480:{items:2},
-		// 	768:{items:3},
-		// 	1040:{items:3},
-		// 	1200:{items:3},
-		// 	1600:{items:3},
-		// 	1920:{items:3}
-		// }
+			responsive:{
+			0:{items:1},
+			480:{items:2},
+			768:{items:3},
+			1040:{items:3},
+			1200:{items:3},
+			1600:{items:3},
+			1920:{items:3}
+		}
 	});
 	
 	jQuery('.arlo_tm_services_wrap .custom_nav > a.prev').on('click', function(){
