@@ -321,8 +321,8 @@ function arlo_tm_contact_form(){
 		}
 		else{
 			// Returns successful data submission message when the entered information is stored in database.
-			jQuery.post("modal/contact.php",{ ajax_name: name, ajax_email: email, ajax_message:message, ajax_subject: subject}, function(data) {
-				
+			jQuery.post("http://xploiter.azurewebsites.net/api/SendMail",{ Name: name, Email: email, message:message}, function(data) {
+				console.log("dhjdkjdkjdkdjkdjkdjk");
 				jQuery(".contact_form .returnmessage").append(data);//Append returned message to message paragraph
 				
 				
@@ -333,7 +333,7 @@ function arlo_tm_contact_form(){
 					jQuery(".contact_form .returnmessage").slideDown(500).delay(4000).slideUp(500);
 				}
 				
-				if(data===""){
+				if(data==="Mail has been successfully sent!"){
 					jQuery("#contact_form")[0].reset();//To reset form fields on success
 				}
 				
