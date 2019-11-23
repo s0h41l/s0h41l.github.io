@@ -308,36 +308,36 @@ function arlo_tm_contact_form(){
 	jQuery(".contact_form #send_message").on('click', function(){
 		
 		var name 		= jQuery(".contact_form #name").val();
-		var email 		= jQuery(".contact_form #email").val();
+		// var email 		= jQuery(".contact_form #email").val();
 		var message 	= jQuery(".contact_form #message").val();
-		var subject 	= jQuery(".contact_form #subject").val();
+		// var subject 	= jQuery(".contact_form #subject").val();
 		var success     = jQuery(".contact_form .returnmessage").data('success');
 	
 		jQuery(".contact_form .returnmessage").empty(); //To empty previous error/success message.
 		//checking for blank fields	
-		if(name===''||email===''||message===''){
-			
+		if(name==='' || message===''){	
 			jQuery('div.empty_notice').slideDown(500).delay(2000).slideUp(500);
 		}
 		else{
+			window.location.href = "mailto:sohailkhan.sk@hotmail.com?subject=s0h41l.github.io&body="+name+" : "+message;
 			// Returns successful data submission message when the entered information is stored in database.
-			jQuery.post("http://xploiter.azurewebsites.net/api/SendMail",{ Name: name, Email: email, message:message}, function(data) {
-				console.log("dhjdkjdkjdkdjkdjkdjk");
-				jQuery(".contact_form .returnmessage").append(data);//Append returned message to message paragraph
+			// jQuery.post("http://xploiter.azurewebsites.net/api/SendMail",{ Name: name, Email: email, message:message}, function(data) {
+			// 	console.log("dhjdkjdkjdkdjkdjkdjk");
+			// 	jQuery(".contact_form .returnmessage").append(data);//Append returned message to message paragraph
 				
 				
-				if(jQuery(".contact_form .returnmessage span.contact_error").length){
-					jQuery(".contact_form .returnmessage").slideDown(500).delay(2000).slideUp(500);		
-				}else{
-					jQuery(".contact_form .returnmessage").append("<span class='contact_success'>"+ success +"</span>");
-					jQuery(".contact_form .returnmessage").slideDown(500).delay(4000).slideUp(500);
-				}
+			// 	if(jQuery(".contact_form .returnmessage span.contact_error").length){
+			// 		jQuery(".contact_form .returnmessage").slideDown(500).delay(2000).slideUp(500);		
+			// 	}else{
+			// 		jQuery(".contact_form .returnmessage").append("<span class='contact_success'>"+ success +"</span>");
+			// 		jQuery(".contact_form .returnmessage").slideDown(500).delay(4000).slideUp(500);
+			// 	}
 				
-				if(data==="Mail has been successfully sent!"){
-					jQuery("#contact_form")[0].reset();//To reset form fields on success
-				}
+			// 	if(data==="Mail has been successfully sent!"){
+			// 		jQuery("#contact_form")[0].reset();//To reset form fields on success
+			// 	}
 				
-			});
+			// });
 		}
 		return false; 
 	});
