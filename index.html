@@ -225,12 +225,12 @@
 								</div>
 								<div class="rightbox">
 									<div class="progress_bar_wrap_total">
-										<div class="arlo_tm_progress_wrap" data-size="small" data-round="c" data-strip="off">
-											<div class="arlo_tm_progress" data-value="80" data-color="#000">
+										<div class="arlo_tm_progress_wrap" data-size="small" data-round="c" data-strip="off" id="skill_container">
+		<!-- 									<div class="arlo_tm_progress" data-value="80" data-color="#000">
 												<span><span class="label">HTML/CSS<span class="experience"></span></span><span class="number">80%</span></span>
 												<div class="arlo_tm_bar_bg"><div class="arlo_tm_bar_wrap"><div class="arlo_tm_bar"></div></div></div>
-											</div>
-											<div class="arlo_tm_progress" data-value="90" data-color="#000">
+											</div> -->
+<!-- 											<div class="arlo_tm_progress" data-value="90" data-color="#000">
 												<span><span class="label">Bootstrap<span class="experience"></span></span><span class="number">90%</span></span>
 												<div class="arlo_tm_bar_bg"><div class="arlo_tm_bar_wrap"><div class="arlo_tm_bar"></div></div></div>
 											</div>
@@ -283,9 +283,7 @@
 											<div class="arlo_tm_progress" data-value="50" data-color="#000">
 												<span><span class="label">Adobe Photoshop<span class="experience"></span></span><span class="number">50%</span></span>
 												<div class="arlo_tm_bar_bg"><div class="arlo_tm_bar_wrap"><div class="arlo_tm_bar"></div></div></div>
-											</div>
-
-
+											</div> -->
 
 										</div>
 									</div>
@@ -802,11 +800,30 @@
 <!-- /SCRIPTS -->
 
 <script>
+	const skillContainer = $('#skill_container');
 	$.ajax({
 		  url: "https://zeek-portfolio.herokuapp.com/portfolio/getAllSkills",
 		  cache: false,
 		  success: function(data){
-		    console.log(data);
+		    $.each(data.data.reverse(),(i, v)=>{
+		    	let skill =`<div class="arlo_tm_progress" data-value="%percentage_value%" data-color="#000">
+								<span>
+									<span class="label">%title%<span class="experience"></span></span>
+									<span class="number">%percentage%%</span>
+								</span>
+									<div class="arlo_tm_bar_bg">
+										<div class="arlo_tm_bar_wrap">
+											<div class="arlo_tm_bar" style="width: %percentage_value%%; background-color: rgb(0, 0, 0);">
+											</div>
+										</div>
+									</div>
+							</div>`;
+				skill = skill.replace('%percentage_value%',v.level);
+				skill = skill.replace('%percentage_value%',v.level);
+				skill = skill.replace('%percentage%',v.level);
+				skill = skill.replace('%title%',v.title);
+				skillContainer.append(skill);
+		    })
 		  }
 		});
 </script>
