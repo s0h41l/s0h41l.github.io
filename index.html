@@ -800,5 +800,15 @@
 <script src="js/plugins.js"></script>
 <script src="js/init.js"></script>
 <!-- /SCRIPTS -->
+
+<script>
+	$.ajax({
+		  url: "https://zeek-portfolio.herokuapp.com/portfolio/getAllSkills",
+		  cache: false,
+		  success: function(data){
+		    console.log(data);
+		  }
+		});
+</script>
 </body>
 </html>
