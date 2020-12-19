@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Netherlands Voertuig Licentie</title>
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script>
+		google.charts.load('current', {'packages':['annotationchart']});
+	</script>
+	<style>
+		.main {
+    		width: 50%;
+    		margin: 50px auto;
+		}
+
+		.has-search .form-control {
+		    padding-left: 2.375rem;
+		}
+
+		.has-search .form-control-feedback {
+		    position: absolute;
+		    z-index: 2;
+		    display: block;
+		    width: 2.375rem;
+		    height: 2.375rem;
+		    line-height: 2.375rem;
+		    text-align: center;
+		    pointer-events: none;
+		    color: #aaa;
+		}
+
+		.bg-navy {
+			background-color: #2C4154
+		}
+
+		.pointer {
+			cursor: pointer;
+		}
+
+		.unselectable {
+		    -webkit-touch-callout: none;
+		    -webkit-user-select: none;
+		    -khtml-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    user-select: none;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+	<div class="p-5">
+		<div class="row">
+			<div class="col-md-12 col-sm-12">
+				<button class="btn btn-secondary pull-right" id="print">Print</button>
+			</div>
+		</div>	
+		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-12 col-xs-12 table-responsive">
+				<div class="row my-2">
+					<div class="col-sm-2 col-md-1 col-lg-1 col-xs-4 mb-1">
+							<select class="form-control rounded-0" id="pageSize">
+								<option value="50">25</option>
+								<option value="50">50</option>
+								<option value="75">75</option>
+								<option value="100">100</option>
+								<option value="150">150</option>
+								<option value="200">200</option>
+								<option value="250">250</option>
+								<option value="300">300</option>
+							</select>
+					</div>
+
+					<div class="col-md-12 col-lg-5 col-sm-12 col-xs-12"></div>
+
+
+					<div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 mb-1">
+						<div class="input-group">
+							<select class="form-control rounded-0" id="searchBy">
+								<option value="kenteken">Kenteken</option>
+								<option value="merk">Merk</option>
+								<option value="handelsbenaming">Handelsbenaming</option>
+								<option value="bruto_bpm">Bruto BPM</option>
+								<option value="datum_eerste_toelating">Eerste Toelating</option>
+								<option value="datum_eerste_afgifte_nederland">Eerste Afgifte Nederland</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 mb-1">
+						 <div class="input-group">
+    						<input type="text" class="form-control rounded-0" placeholder="Search.." id="seachField">
+    						<div class="input-group-append">
+     							<button class="btn btn-secondary rounded-0" type="button">
+       							 	<i class="fa fa-search"></i>
+      							</button>
+    						</div>
+  						</div>
+					</div>
+
+				</div>
+				<div id="printIndentTable">
+					<table class="table table-bordered table-striped">
+					<thead class="bg-navy text-white">
+						<th class="pointer unselectable" onclick="sortEvent('kenteken')">Kenteken <i class="fa fa-arrow-up" id="kenteken"></i> </th>
+						<th class="pointer unselectable" onclick="sortEvent('merk')">Merk <i class="" id="merk"></i> </th>
+						<th class="pointer unselectable" onclick="sortEvent('handelsbenaming')">Handelsbenaming <i class="" id="handelsbenaming"></i> </th>
+						<th class="pointer unselectable" onclick="sortEvent('bruto_bpm')">Bruto BPM <i class="" id="bruto_bpm"></i></th>
+						<th class="pointer unselectable" onclick="sortEvent('datum_eerste_toelating')">Eerste Toelating <i class="" id="datum_eerste_toelating"></i></th>
+						<th 
+							class="pointer unselectable" 
+							onclick="sortEvent('datum_eerste_afgifte_nederland')">
+								Eerste Afgifte Nederland 
+								<i class="" id="datum_eerste_afgifte_nederland"></i>
+						</th>
+					</thead>
+					<tbody id="dataContainer">
+
+					</tbody>
+				</table>
+				</div>
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-12 col-xs-12 col-lg-12">
+				<button class="btn btn-secondary" title="Previous Page" onclick="prev()" id="prev" disabled>
+					<i class="fa fa-arrow-left"></i>
+				</button>
+				<button class="btn btn-secondary pull-right" title="Next Page" onclick="next()" id="next">
+					<i class="fa fa-arrow-right"></i>
+				</button>
+			</div>
+		</div>
+		<div class="mt-5 container border" style="overflow-x: auto;">
+			<div id='chart_div' style='width: 100%; height: 600px;'></div>
+		</div>
+	</div>
+
+<script>
+	const drawChart = (points) => {
+	    var data = google.visualization.arrayToDataTable([
+	        ['Bruto BPM vs. Eerste Afgifte Nederland', 'Eerste Afgifte Nederland'],
+	        ...points
+	    ]);
+
+	    var options = {
+	        title: 'Bruto BPM vs. Eerste Afgifte Nederland',
+	        hAxis: {
+	            title: 'Eerste Afgifte Nederland'
+	        },
+	        vAxis: {
+	            title: 'Bruto BPM'
+	        },
+	        legend: 'none'
+	    };
+
+	    var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+	    chart.clearChart();
+	    chart.draw(data, options);
+	}
+
+
+	/*** Veriables ***/
+	let order = 'ASC';
+	let sort = 'kenteken';
+	let searchBy = 'kenteken';
+	let searchKey = '';
+	let limit = 25;
+	let page = 1;
+	let dataContainer = $('#dataContainer');
+	let apiData = [];
+
+
+	/*** DOM Selectors ***/
+	const searbySelector = $('#searchBy');
+	const seachField = $('#seachField');
+	const pageSizeSelector = $('#pageSize');
+	const prevButton = $('#prev');
+	const nextButton = $('#next');
+
+	const sortSelectors = {
+	    kenteken: $('#kenteken'),
+	    merk: $('#merk'),
+	    handelsbenaming: $('#handelsbenaming'),
+	    bruto_bpm: $('#bruto_bpm'),
+	    datum_eerste_toelating: $('#datum_eerste_toelating'),
+	    datum_eerste_afgifte_nederland: $('#datum_eerste_afgifte_nederland')
+	};
+
+
+	/*** Utility Functions ***/
+	pageSizeSelector.change(event => {
+	    limit = +event.target.value;
+	    page = 1;
+	    getPage(searchBy, searchKey, sort, order);
+	})
+
+	searbySelector.change(event => {
+	    searchBy = event.target.value;
+	    getPage(searchBy, searchKey, sort, order);
+	});
+
+	seachField.change(event => {
+	    searchKey = event.target.value;
+	    if (searchBy === 'datum_eerste_toelating' || searchBy === 'datum_eerste_afgifte_nederland') {
+	        searchKey = searchKey.replaceAll('-', '');
+	    }
+	    getPage(searchBy, searchKey, sort, order);
+	});
+
+	const prev = () => {
+	    page = page > 1 ? (page - 1) : 1;
+	    if (!(page > 1)) {
+	        prevButton.prop('disabled', true);
+	    }
+	    getPage(searchBy, searchKey, sort, order);
+	}
+
+	const next = () => {
+	    if (apiData.length >= limit) {
+	        page++;
+	        if ((page > 1)) {
+	            prevButton.prop('disabled', false);
+	        }
+	        getPage(searchBy, searchKey, sort, order);
+	    }
+	}
+
+	const sortEvent = (_sort) => {
+	    order = _sort == sort ? (order == 'ASC' ? 'DESC' : 'ASC') : 'ASC';
+	    sort = _sort;
+	    const sortClass = order == 'ASC' ? 'fa fa-arrow-up' : 'fa fa-arrow-down';
+
+	    const headerKeys = Object.keys(sortSelectors);
+	    headerKeys.forEach(key => {
+	        sortSelectors[key].removeClass();
+	    })
+	    sortSelectors[_sort].addClass(sortClass);
+	    getPage(searchBy, searchKey, sort, order);
+	}
+
+	const getPage = (searchBy = 'kenteken', searchKey = '', sort = 'kenteken', order = 'ASC') => {
+	    const BASE_API = 'https://opendata.rdw.nl/resource/m9d7-ebf2.json';
+	    let query = `?$where=bruto_bpm IS NOT NULL`;
+	    if (searchKey) {
+	        query = query + `&${searchBy}=${searchKey}`;
+	    }
+	    const offset = (page - 1) * limit;
+	    query = BASE_API + query + `&$limit=${limit}&$offset=${offset}&$order=${sort} ${order}`;
+	    $.ajax({
+	        url: query,
+	        type: "GET",
+	        dataType: "json",
+	        success: function(data) {
+	            apiData = data;
+	            dataContainer.html('');
+	            const dataPoints = [];
+	            $.each(data, (index, row) => {
+	                const d1 = row.datum_eerste_toelating;
+	                const d2 = row.datum_eerste_afgifte_nederland;
+
+	                let first_admission_date = '';
+	                let first_issue_date = '';
+
+	                if (d1) {
+	                    first_admission_date = d1.slice(0, 4) + '-' + d1.slice(4, 6) + '-' + d1.slice(6, 8)
+	                }
+
+	                if (d2) {
+	                    first_issue_date = d2.slice(0, 4) + '-' + d2.slice(4, 6) + '-' + d2.slice(6, 8);
+	                    dataPoints.push([new Date(first_issue_date), +row.bruto_bpm]);
+	                }
+
+
+	                const rowHTML = `<tr>
+										<td>${row.kenteken}</td>
+										<td>${row.merk}</td>
+										<td>${row.handelsbenaming}</td>
+										<td>${row.bruto_bpm}</td>
+										<td>${first_admission_date}</td>
+										<td>${first_issue_date}</td>
+									</tr>`
+	                dataContainer.append(rowHTML);
+	            });
+	            setTimeout(() => {
+	                drawChart(dataPoints);
+	            }, 500);
+	        }
+	    });
+	};
+
+	getPage(searchBy, searchKey, sort, order);
+</script>
+
+<script>
+
+$(document).ready(function() {
+    $('#print').click(function(){   
+        var divContents = $('#printIndentTable').html();
+        var printWindow = window.open('', '', ',width=800');
+        printWindow.document.write('<html>');
+        printWindow.document.write(`<style>table, td, th {
+									  border: 1px solid black;
+									}
+
+									table {
+									  border-collapse: collapse;
+									  width: 100%;
+									}
+
+									th {
+									  height: 70px;
+									}
+									</style>`);
+        printWindow.document.write('<body >');
+        printWindow.document.write(divContents);
+        printWindow.document.write('</body></html>');
+        printWindow.print();
+        printWindow.close();
+    });//end of print button click
+});//end of ready function
+</script>
+
+
+
+
+
+</body>
+</html>
